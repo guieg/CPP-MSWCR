@@ -16,7 +16,7 @@ def read_file_to_graph(path):
 if __name__ == "__main__":
     graphs = [read_file_to_graph(file_path) for file_path in argv[1:]]
     for graph in graphs:
-        print(graph.edges)
+        print(graph.get_degree(2))
 
     pass
     chinese_postman_problem_solver()
