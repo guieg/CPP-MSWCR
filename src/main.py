@@ -1,5 +1,6 @@
 from sys import argv
 from pandas import read_csv
+from CPP import ChinesePostmanProblem
 from graph import Graph
 
 def chinese_postman_problem_solver():
@@ -16,7 +17,5 @@ def read_file_to_graph(path):
 if __name__ == "__main__":
     graphs = [read_file_to_graph(file_path) for file_path in argv[1:]]
     for graph in graphs:
-        print(graph.get_degree(2))
-
-    pass
-    chinese_postman_problem_solver()
+        CPP = ChinesePostmanProblem(graph)
+        CPP.solve_cpp()

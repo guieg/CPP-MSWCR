@@ -7,6 +7,9 @@ class Graph():
         self.nodes = nodes
         self.edges = edges
 
+    def get_nodes(self):
+        return self.nodes
+
     def get_degree(self, node):
         degree = 0
         for edge in self.edges:
