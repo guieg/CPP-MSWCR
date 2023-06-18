@@ -36,7 +36,6 @@ class ChinesePostmanProblem():
                 adj_list[j].remove(i)
                 stack.append(j)
 
-        # Retorna a lista do ciclo euleriano (invertida)
         return cycle[::-1]
 
     def hierholzer(self):
@@ -87,11 +86,10 @@ class ChinesePostmanProblem():
         odd_nodes = [n for n in self.graph.get_nodes() if self.graph.get_degree(n) % 2 != 0]
         initial_pairs = self.gen_pairs(odd_nodes)
         print('initial pairs are:',initial_pairs)
-        if(len(initial_pairs) > 2):
-            l = (len(initial_pairs)+1)//2
-            complete_pairs = self.get_pairs(initial_pairs,l)
-            print('complete pairs are :',complete_pairs)
-            print('number of combinations', len(complete_pairs))
+        l = (len(initial_pairs)+1)//2
+        complete_pairs = self.get_pairs(initial_pairs,l)
+        print('complete pairs are :', complete_pairs)
+        print('number of combinations', len(complete_pairs))
 
     def solve_cpp(self):
         if self.check_eulerian():
