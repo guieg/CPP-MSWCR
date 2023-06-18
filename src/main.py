@@ -5,9 +5,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from copy import deepcopy
 
-def chinese_postman_problem_solver():
-    pass
-
 def read_file_to_graph(path):
     file = open(path, 'r')
     lines = [line.rstrip() for line in file]
