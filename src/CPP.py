@@ -6,7 +6,7 @@ class ChinesePostmanProblem():
         pass
 
     def get_cycle(self):
-        # Cria um dicionário para armazenar os vizinhos de cada vértice
+
         adj_list = {}
         for node in self.graph.nodes:
             adj_list[node] = []
@@ -15,7 +15,6 @@ class ChinesePostmanProblem():
             adj_list[u].append(v)
             adj_list[v].append(u)
 
-        # Inicializa a pilha e a lista de vértices visitados
         start = None
         for node in self.graph.nodes:
             for edge in self.graph.edges:
@@ -23,29 +22,19 @@ class ChinesePostmanProblem():
                     start = node
                     break
             
-        stack = [start]
-        cycle = []
+        stack, cycle = [start], []
 
         while stack:
-            u = stack[-1]
+            i = stack[-1]
 
-            if len(adj_list[u]) == 0:
-                # Se não houver mais vizinhos não visitados para o vértice atual,
-                # adiciona o vértice à lista do ciclo euleriano
-                cycle.append(u)
+            if len(adj_list[i]) == 0:
+                cycle.append(i)
                 stack.pop()
             else:
-                # Caso contrário, escolhe um vizinho não visitado do vértice atual
-                v = adj_list[u][0]
-                # Remove a aresta entre u e v
-                adj_list[u].remove(v)
-                adj_list[v].remove(u)
-                try:
-                    self.graph.edges.remove([u,v])
-                except:
-                    self.graph.edges.remove([v,u])
-                # Adiciona o vizinho v à pilha
-                stack.append(v)
+                j = adj_list[i][0]
+                adj_list[i].remove(j)
+                adj_list[j].remove(i)
+                stack.append(j)
 
         # Retorna a lista do ciclo euleriano (invertida)
         return cycle[::-1]
@@ -53,13 +42,7 @@ class ChinesePostmanProblem():
     def hierholzer(self):
         for edge in self.graph.edges:
             edge.pop()
-        eulerian_path = []
-        while True:
-            try:
-                eulerian_path += self.get_cycle()
-            except:
-                break
-        return eulerian_path
+        return self.get_cycle()
 
     def gen_pairs(self,odds):
         pairs = []

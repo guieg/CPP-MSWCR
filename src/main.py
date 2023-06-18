@@ -3,6 +3,7 @@ from CPP import ChinesePostmanProblem
 from graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 def chinese_postman_problem_solver():
     pass
@@ -43,6 +44,7 @@ def plot(graph : Graph):
 if __name__ == "__main__":
     graphs = [read_file_to_graph(file_path) for file_path in argv[1:]]
     for graph in graphs:
-        plot(graph)
+        g = deepcopy(graph)
         CPP = ChinesePostmanProblem(graph)
         CPP.solve_cpp()
+        plot(g)
