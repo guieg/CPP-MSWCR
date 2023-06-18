@@ -5,8 +5,44 @@ class ChinesePostmanProblem():
     def dijkstra(self):
         pass
 
+    def get_cycle(self):
+
+        adj_list = {}
+        for node in self.graph.nodes:
+            adj_list[node] = []
+
+        for u, v in self.graph.edges:
+            adj_list[u].append(v)
+            adj_list[v].append(u)
+
+        start = None
+        for node in self.graph.nodes:
+            for edge in self.graph.edges:
+                if node in edge:
+                    start = node
+                    break
+            
+        stack, cycle = [start], []
+
+        while stack:
+            i = stack[-1]
+
+            if len(adj_list[i]) == 0:
+                cycle.append(i)
+                stack.pop()
+            else:
+                j = adj_list[i][0]
+                adj_list[i].remove(j)
+                adj_list[j].remove(i)
+                stack.append(j)
+
+        # Retorna a lista do ciclo euleriano (invertida)
+        return cycle[::-1]
+
     def hierholzer(self):
-        pass
+        for edge in self.graph.edges:
+            edge.pop()
+        return self.get_cycle()
 
     def gen_pairs(self,odds):
         pairs = []
@@ -59,7 +95,8 @@ class ChinesePostmanProblem():
     def solve_cpp(self):
         if self.check_eulerian():
             print("É euleriano")
+            print("Caminho euleriano: " + str(self.hierholzer()))
             
         else:
             print("Não é euleriano")
-            self.find_best_minimum_pairing()
+            #self.find_best_minimum_pairing()
