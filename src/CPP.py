@@ -5,8 +5,61 @@ class ChinesePostmanProblem():
     def dijkstra(self):
         pass
 
+    def get_cycle(self):
+        # Cria um dicionário para armazenar os vizinhos de cada vértice
+        adj_list = {}
+        for node in self.graph.nodes:
+            adj_list[node] = []
+
+        for u, v in self.graph.edges:
+            adj_list[u].append(v)
+            adj_list[v].append(u)
+
+        # Inicializa a pilha e a lista de vértices visitados
+        start = None
+        for node in self.graph.nodes:
+            for edge in self.graph.edges:
+                if node in edge:
+                    start = node
+                    break
+            
+        stack = [start]
+        cycle = []
+
+        while stack:
+            u = stack[-1]
+
+            if len(adj_list[u]) == 0:
+                # Se não houver mais vizinhos não visitados para o vértice atual,
+                # adiciona o vértice à lista do ciclo euleriano
+                cycle.append(u)
+                stack.pop()
+            else:
+                # Caso contrário, escolhe um vizinho não visitado do vértice atual
+                v = adj_list[u][0]
+                # Remove a aresta entre u e v
+                adj_list[u].remove(v)
+                adj_list[v].remove(u)
+                try:
+                    self.graph.edges.remove([u,v])
+                except:
+                    self.graph.edges.remove([v,u])
+                # Adiciona o vizinho v à pilha
+                stack.append(v)
+
+        # Retorna a lista do ciclo euleriano (invertida)
+        return cycle[::-1]
+
     def hierholzer(self):
-        pass
+        for edge in self.graph.edges:
+            edge.pop()
+        eulerian_path = []
+        while True:
+            try:
+                eulerian_path += self.get_cycle()
+            except:
+                break
+        return eulerian_path
 
     def gen_pairs(self,odds):
         pairs = []
@@ -59,7 +112,8 @@ class ChinesePostmanProblem():
     def solve_cpp(self):
         if self.check_eulerian():
             print("É euleriano")
+            print("Caminho euleriano: " + str(self.hierholzer()))
             
         else:
             print("Não é euleriano")
-            self.find_best_minimum_pairing()
+            #self.find_best_minimum_pairing()

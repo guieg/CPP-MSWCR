@@ -1,5 +1,4 @@
 from sys import argv
-from pandas import read_csv
 from CPP import ChinesePostmanProblem
 from graph import Graph
 

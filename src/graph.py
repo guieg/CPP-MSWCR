@@ -11,7 +11,13 @@ class Graph():
         return self.nodes
     
     def get_edges(self):
-        return self.nodes
+        return self.edges
+
+    def set_nodes(self, nodes):
+        self.nodes = nodes
+    
+    def set_edges(self, edges):
+        self.edges = edges
 
     def get_degree(self, node):
         degree = 0
@@ -24,7 +30,7 @@ class Graph():
         pass
 
     def remove_node(self, node):
-        pass
+        self.nodes.remove(node)
 
     def add_edge(self, edge):
         pass
