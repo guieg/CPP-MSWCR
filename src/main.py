@@ -21,17 +21,14 @@ def plot(graph : Graph):
     G.add_nodes_from(graph.get_nodes())
     G.add_weighted_edges_from(graph.get_edges())
 
-    pos = nx.spring_layout(G, seed=7)  # positions for all nodes - seed for reproducibility
+    pos = nx.spring_layout(G, seed=7)
 
-    # nodes
     nx.draw_networkx_nodes(G, pos, node_size=100)
 
-    # edges
     nx.draw_networkx_edges(G, pos, edgelist=G.edges(data=True), width=2)
 
-    # node labels
     nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif")
-    # edge weight labels
+
     edge_labels = nx.get_edge_attributes(G, "weight")
     nx.draw_networkx_edge_labels(G, pos, edge_labels)
 
