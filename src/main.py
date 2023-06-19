@@ -39,6 +39,7 @@ if __name__ == "__main__":
     graphs = [read_file_to_graph(file_path) for file_path in argv[1:]]
     for graph in graphs:
         g = deepcopy(graph)
+        #plot(g)
         CPP = ChinesePostmanProblem(graph)
         CPP.solve_cpp()
         plot(g)

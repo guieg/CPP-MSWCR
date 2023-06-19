@@ -79,16 +79,20 @@ class ChinesePostmanProblem():
         odd_nodes = [n for n in self.graph.get_nodes() if self.graph.get_degree(n) % 2 != 0]
         if len(odd_nodes) == 0:
             return True
-        print(odd_nodes)
         return False
 
     def find_best_minimum_pairing(self):
         odd_nodes = [n for n in self.graph.get_nodes() if self.graph.get_degree(n) % 2 != 0]
+        print(odd_nodes)
         initial_pairs = self.gen_pairs(odd_nodes)
         print('initial pairs are:',initial_pairs)
-        if(len(initial_pairs) > 2):
+        if(len(initial_pairs) > 4):
             l = (len(initial_pairs)+1)//2
             complete_pairs = self.get_pairs(initial_pairs,l)
+            print('complete pairs are :',complete_pairs)
+            print('number of combinations', len(complete_pairs))
+        else:
+            complete_pairs = initial_pairs
             print('complete pairs are :',complete_pairs)
             print('number of combinations', len(complete_pairs))
 
