@@ -1,4 +1,5 @@
 from sys import maxsize
+from itertools import combinations
 
 class ChinesePostmanProblem():
     def __init__(self, graph) -> None:
@@ -63,9 +64,9 @@ class ChinesePostmanProblem():
 
         return cost, path
 
-    def get_cycle(self):
-
+    def hierholzer(self):
         ad_list = {}
+
         for node in self.graph.nodes:
             ad_list[node] = []
 
@@ -95,77 +96,70 @@ class ChinesePostmanProblem():
                 stack.append(j)
 
         return cycle[::-1]
-
-    def hierholzer(self):
-        for edge in self.graph.edges:
-            edge.pop()
-        return self.get_cycle()
-
-    def gen_pairs(self,odds):
-        pairs = []
-        for i in range(len(odds)-1):
-            pairs.append([])
-            for j in range(i+1,len(odds)):
-                pairs[i].append([odds[i],odds[j]])
-        return pairs
-
-        
-    def get_pairs(self, pairs, l, done = [], final = [], pairings_sum = []):
-        if(pairs[0][0][0] not in done):
-            done.append(pairs[0][0][0])
-            for i in pairs[0]:
-                f = final[:]
-                val = done[:]
-                if(i[1] not in val):
-                    f.append(i)
-                else:
-                    continue
-                if(len(f)==l):
-                    pairings_sum.append(f)
-                    return 
-                else:
-                    val.append(i[1])
-                    self.get_pairs(pairs[1:], l,val, f, pairings_sum)
-                    
-                    
-        else:
-            self.get_pairs(pairs[1:], l, done, final, pairings_sum)
-        return pairings_sum
-            
-        
+   
     def check_eulerian(self):
         odd_nodes = [n for n in self.graph.get_nodes() if self.graph.get_degree(n) % 2 != 0]
         if len(odd_nodes) == 0:
             return True
         return False
-
-    def find_best_minimum_pairing(self):
+    
+    def get_possible_sets(self):
         odd_nodes = [n for n in self.graph.get_nodes() if self.graph.get_degree(n) % 2 != 0]
-        print(odd_nodes)
-        initial_pairs = self.gen_pairs(odd_nodes)
-        print('initial pairs are:',initial_pairs)
-        if(len(initial_pairs) > 4):
-            l = (len(initial_pairs)+1)//2
-            complete_pairs = self.get_pairs(initial_pairs,l)
-            print('complete pairs are :',complete_pairs)
-            print('number of combinations', len(complete_pairs))
-        else:
-            complete_pairs = initial_pairs
-            print('complete pairs are :',complete_pairs)
-            print('number of combinations', len(complete_pairs))
-        return complete_pairs
+        all_pairs = list(combinations(odd_nodes, 2))
+        list_of_sets = []
+        for x, y in all_pairs:
+            new_set = [[x, y]]
+            for a, b in all_pairs:
+                isIn = False
+                for pair in new_set:
+                    if a in pair or b in pair:
+                        isIn = True
+                        break
+                        
+                if not isIn:
+                    new_set.append([a, b])
+            reverse = new_set.copy()
+            reverse.reverse()
+            if reverse not in list_of_sets:
+                list_of_sets.append(new_set)
+        return list_of_sets
+    
+
 
     def solve_cpp(self):
         if self.check_eulerian():
             print("É euleriano")
+            for edge in self.graph.edges:
+                edge.pop()
             print("Caminho euleriano: " + str(self.hierholzer()))
             
         else:
             print("Não é euleriano")
-            pairs_sets = self.find_best_minimum_pairing()
+            pairs_sets = self.get_possible_sets()
+            print(pairs_sets)
 
-            for set in pairs_sets:
-                for pair in set:
-                    u, v = pair
-                    print(u, v)
-                    print("Distance " + str(u) + " to " + str(v)+": " + str(self.dijkstra(pair)))
+            set_sums = {}
+            pair_path = {}
+            for set in range(len(pairs_sets)):
+                set_sums[set] = 0
+                for pair in range(len(pairs_sets[set])):
+                    u, v = pairs_sets[set][pair]
+                    distance, path = self.dijkstra((u, v))
+                    set_sums[set] += distance
+                    pair_path[pair] = path
+
+            minimum_set = min(set_sums, key=set_sums.get)
+            chosed_set = pairs_sets[minimum_set]
+
+            for edge in self.graph.edges:
+                edge.pop()
+
+            print(chosed_set)
+            for pair in range(len(chosed_set)):
+                    for node in range(len(pair_path[pair])-1):
+                        if [pair_path[pair][node], pair_path[pair][node+1]] in self.graph.edges:
+                            self.graph.edges.append([pair_path[pair][node], pair_path[pair][node+1]])
+                        else:
+                            self.graph.edges.append([pair_path[pair][node+1], pair_path[pair][node]])
+            #print(self.graph.edges)
+            print("Caminho euleriano: " + str(self.hierholzer()))
