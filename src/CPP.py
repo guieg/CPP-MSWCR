@@ -1,19 +1,77 @@
+from sys import maxsize
+
 class ChinesePostmanProblem():
     def __init__(self, graph) -> None:
         self.graph = graph
 
-    def dijkstra(self):
-        pass
+    def dijkstra(self, pair):
+        ad_list = {}
+        for node in self.graph.get_nodes():
+            ad_list[node] = []
+
+        for u, v, p in self.graph.get_edges():
+            ad_list[u].append([v, p])
+            ad_list[v].append([u, p])
+
+        start, end = pair
+        nodes = self.graph.get_nodes()
+        unvisited = nodes.copy()
+
+        path_costs = {}
+        previous_nodes = {}
+        for node in nodes:
+            path_costs[node] = maxsize
+            previous_nodes[node] = None
+        path_costs[start] = 0
+
+        
+
+        node = start
+        while unvisited:
+            for ad in ad_list[node]:
+                next_node = ad[0]
+
+                if next_node not in unvisited:
+                    continue
+                
+                if path_costs[next_node] > path_costs[node] + ad[1]:
+                    path_costs[next_node] = path_costs[node] + ad[1]
+                    previous_nodes[next_node] = node
+
+            unvisited.remove(node)
+            
+            ads = {}
+            for u, v in path_costs.items():
+                if u in unvisited:
+                    ads[u] = v
+            
+            if len(ads) > 0:
+                node = min(ads, key=ads.get) 
+            else:
+                break
+
+            if node == end:
+                break
+
+        cost = path_costs[end]
+
+        path = []
+        previous = end
+        while previous != None:
+            path.insert(0, previous)
+            previous = previous_nodes[previous]
+
+        return cost, path
 
     def get_cycle(self):
 
-        adj_list = {}
+        ad_list = {}
         for node in self.graph.nodes:
-            adj_list[node] = []
+            ad_list[node] = []
 
         for u, v in self.graph.edges:
-            adj_list[u].append(v)
-            adj_list[v].append(u)
+            ad_list[u].append(v)
+            ad_list[v].append(u)
 
         start = None
         for node in self.graph.nodes:
@@ -27,13 +85,13 @@ class ChinesePostmanProblem():
         while stack:
             i = stack[-1]
 
-            if len(adj_list[i]) == 0:
+            if len(ad_list[i]) == 0:
                 cycle.append(i)
                 stack.pop()
             else:
-                j = adj_list[i][0]
-                adj_list[i].remove(j)
-                adj_list[j].remove(i)
+                j = ad_list[i][0]
+                ad_list[i].remove(j)
+                ad_list[j].remove(i)
                 stack.append(j)
 
         return cycle[::-1]
@@ -95,6 +153,7 @@ class ChinesePostmanProblem():
             complete_pairs = initial_pairs
             print('complete pairs are :',complete_pairs)
             print('number of combinations', len(complete_pairs))
+        return complete_pairs
 
     def solve_cpp(self):
         if self.check_eulerian():
@@ -103,4 +162,10 @@ class ChinesePostmanProblem():
             
         else:
             print("Não é euleriano")
-            self.find_best_minimum_pairing()
+            pairs_sets = self.find_best_minimum_pairing()
+
+            for set in pairs_sets:
+                for pair in set:
+                    u, v = pair
+                    print(u, v)
+                    print("Distance " + str(u) + " to " + str(v)+": " + str(self.dijkstra(pair)))
