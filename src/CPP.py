@@ -127,8 +127,10 @@ class ChinesePostmanProblem():
 
 
     def solve_cpp(self):
+        cost = self.graph.get_cost()
         if self.check_eulerian():
             print("É euleriano")
+            
             for edge in self.graph.edges:
                 edge.pop()
             print("Caminho euleriano: " + str(self.hierholzer()))
@@ -150,7 +152,8 @@ class ChinesePostmanProblem():
 
             minimum_set = min(set_sums, key=set_sums.get)
             chosed_set = pairs_sets[minimum_set]
-
+            for pair in chosed_set:
+                cost += pair[-1]
             for edge in self.graph.edges:
                 edge.pop()
 
@@ -163,3 +166,4 @@ class ChinesePostmanProblem():
                             self.graph.edges.append([pair_path[pair][node+1], pair_path[pair][node]])
             #print(self.graph.edges)
             print("Caminho euleriano: " + str(self.hierholzer()))
+        print("Custo:" + str(cost))

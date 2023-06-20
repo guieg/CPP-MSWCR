@@ -7,6 +7,12 @@ class Graph():
         self.nodes = nodes
         self.edges = edges
 
+    def get_cost(self):
+        cost = 0
+        for edge in self.edges:
+            cost += edge[-1]
+        return cost
+
     def get_nodes(self):
         return self.nodes
     
