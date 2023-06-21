@@ -152,8 +152,7 @@ class ChinesePostmanProblem():
 
             minimum_set = min(set_sums, key=set_sums.get)
             chosed_set = pairs_sets[minimum_set]
-            for pair in chosed_set:
-                cost += pair[-1]
+            cost += set_sums[minimum_set]
             for edge in self.graph.edges:
                 edge.pop()
 
